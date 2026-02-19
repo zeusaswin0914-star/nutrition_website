@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+env1/
+.venv/
+
+# ML model files (large)
+*.pkl
+
+# Uploads
+uploads/
+
+# Node modules
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Gemini agent data
+.gemini/
+
+# Duplicate project subfolder
+project/
+
+# Generated charts on disk
+static/charts/
+
+# Large data files (too big for GitHub)
+lab.dat
+lab.sas
+dataset.csv
+lab_clean.csv
+lab_clean_processed.csv
+nhanes_with_calories.csv
+nhanes_real_with_calories.csv
+version2/processed_data_v2.csv
+version2/diet_dataset.csv
+
+# Large model evaluation images
+model_evaluation_performance.png
+model_error_distribution.png
+model_metrics_comparison.png
+model_performance_metrics.png
+
+# PDF reports
+nutrition_report.pdf

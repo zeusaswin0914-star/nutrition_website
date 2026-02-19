@@ -1,0 +1,106 @@
+================================================================================
+DATA CLEANING REPORT - lab_clean.csv
+================================================================================
+Generated: 2025-12-17 10:19:37
+
+DATASET OVERVIEW
+--------------------------------------------------------------------------------
+Original rows:  29314
+Cleaned rows:   26088
+Rows removed:   3226
+Columns:        15
+
+SENTINEL ERROR VALUES DETECTED & REMOVED
+--------------------------------------------------------------------------------
+
+CEP:
+  8888: 1494 occurrences replaced with NaN → median imputation
+
+CLPSI:
+  88888: 1493 occurrences replaced with NaN → median imputation
+
+FEP:
+  88: 274 occurrences replaced with NaN → median imputation
+  888: 2807 occurrences replaced with NaN → median imputation
+
+FOP:
+  88888: 1937 occurrences replaced with NaN → median imputation
+
+HGP:
+  88888: 2914 occurrences replaced with NaN → median imputation
+
+NAPSI:
+  88888: 1493 occurrences replaced with NaN → median imputation
+
+SGP:
+  88: 699 occurrences replaced with NaN → median imputation
+  888: 1497 occurrences replaced with NaN → median imputation
+
+SKPSI:
+  8888: 1493 occurrences replaced with NaN → median imputation
+
+TBP:
+  8888: 1493 occurrences replaced with NaN → median imputation
+
+TCP:
+  888: 2081 occurrences replaced with NaN → median imputation
+
+UAP:
+  8888: 1493 occurrences replaced with NaN → median imputation
+
+VAP:
+  88: 53 occurrences replaced with NaN → median imputation
+  888: 2368 occurrences replaced with NaN → median imputation
+
+VBP:
+  888: 7 occurrences replaced with NaN → median imputation
+
+VCP:
+  8888: 2408 occurrences replaced with NaN → median imputation
+
+VEP:
+  888: 43 occurrences replaced with NaN → median imputation
+  88888: 2368 occurrences replaced with NaN → median imputation
+
+
+MISSING VALUES - BEFORE & AFTER
+--------------------------------------------------------------------------------
+Column     Before       After        Status              
+--------------------------------------------------------------------------------
+HGP        2942         0            ✓ CLEAN             
+SGP        11294        0            ✓ CLEAN             
+UAP        10591        0            ✓ CLEAN             
+CEP        10592        0            ✓ CLEAN             
+NAPSI      10591        0            ✓ CLEAN             
+SKPSI      10591        0            ✓ CLEAN             
+CLPSI      10591        0            ✓ CLEAN             
+TBP        10591        0            ✓ CLEAN             
+VAP        6093         0            ✓ CLEAN             
+VEP        6083         0            ✓ CLEAN             
+VCP        8678         0            ✓ CLEAN             
+VBP        16575        0            ✓ CLEAN             
+FOP        5609         0            ✓ CLEAN             
+FEP        3109         0            ✓ CLEAN             
+TCP        5753         0            ✓ CLEAN             
+
+DATA QUALITY METRICS
+--------------------------------------------------------------------------------
+Data completeness before: 70.51%
+Data completeness after:  100.00%
+Improvement: 29.49%
+
+STATISTICAL SUMMARY (CLEANED DATA)
+--------------------------------------------------------------------------------
+                HGP           SGP           UAP           CEP         NAPSI         SKPSI         CLPSI           TBP           VAP           VEP           VCP            VBP           FOP           FEP           TCP
+count  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000  26088.000000   26088.000000  26088.000000  26088.000000  26088.000000
+mean      13.507356     97.198865      5.268464      1.048244    141.279703      4.058415    104.497075      0.564194     51.269434   1016.861239      0.759137    6120.927476      6.899759     83.578350    192.724509
+std        1.508723     30.810994      1.254098      0.311321      2.105157      0.283383      2.828269      0.289417     16.399345    434.997017      0.406135   70012.263771      5.647029     36.745576     42.576859
+min        4.950000     37.000000      0.200000      0.300000    123.400000      2.510000     76.200000      0.000000      2.000000     28.000000      0.000000      33.000000      0.100000      4.000000     59.000000
+25%       12.450000     87.000000      4.600000      0.900000    140.400000      3.930000    103.300000      0.400000     40.000000    771.000000      0.520000     525.000000      3.800000     58.000000    164.000000
+50%       13.400000     92.000000      5.200000      1.000000    141.300000      4.050000    104.600000      0.500000     49.000000    918.000000      0.750000     525.000000      5.500000     78.000000    188.000000
+75%       14.550000     96.000000      5.800000      1.100000    142.100000      4.160000    105.800000      0.600000     60.000000   1133.000000      0.960000     525.000000      8.200000    104.000000    215.000000
+max       19.600000    571.000000     15.900000     13.900000    177.500000      6.940000    121.600000     10.400000    259.000000   9999.000000      4.720000  888888.000000    199.000000    338.000000    702.000000
+
+================================================================================
+✅ CLEANING COMPLETE
+================================================================================

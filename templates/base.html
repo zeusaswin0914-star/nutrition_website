@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Personalized Nutrition{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-bg);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Poppins', sans-serif;
+      color: var(--primary);
+    }
+
+    /* Professional Header */
+    .header-pro {
+      background: var(--white);
+      padding: 0;
+      border-bottom: 1px solid var(--light-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .header-pro-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .brand-pro {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 1.2rem;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .brand-main {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-highlight {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      letter-spacing: 0.3px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-pro {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .nav-pro {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .menu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      margin-right: 8px;
+      color: var(--primary);
+    }
+
+    .menu-icon {
+      font-size: 20px;
+    }
+
+    .nav-pro a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.5rem 1.2rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-pro a:hover {
+      color: var(--primary);
+      border-bottom-color: var(--primary-light);
+    }
+
+    .nav-pro a.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary-light);
+    }
+
+    .nav-pro .btn {
+      background: var(--primary-light);
+      color: var(--white);
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .nav-pro .btn:hover {
+      background: var(--primary);
+    }
+
+    /* Profile dropdown */
+    .profile-dropdown {
+      position: relative;
+    }
+
+    .profile-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--primary);
+      border: 1px solid var(--light-border);
+      cursor: pointer;
+    }
+
+    .profile-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      min-width: 160px;
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      display: none;
+      z-index: 200;
+    }
+
+    .profile-menu a {
+      display: block;
+      padding: 0.8rem 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--light-border);
+    }
+
+    .profile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .profile-menu a:hover {
+      background: var(--light-bg);
+      color: var(--primary);
+    }
+
+    /* Main Container */
+    .container-pro {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Footer */
+    .footer-pro {
+      background: var(--light-bg);
+      border-top: 1px solid var(--light-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      margin-top: 4rem;
+    }
+
+    /* Welcome sidebar/modal styles */
+    .welcome-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
+      display: none;
+      justify-content: flex-start;
+      align-items: stretch;
+      z-index: 1500;
+    }
+
+    .welcome-sidebar {
+      width: 360px;
+      max-width: 85%;
+      background: var(--white);
+      padding: 28px 24px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      border-radius: 0 12px 12px 0;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .welcome-close {
+      position: absolute;
+      right: 18px;
+      top: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--light-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .welcome-avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 4px solid var(--light-border);
+      display: block;
+      margin: 6px auto 18px auto;
+      background: var(--light-bg);
+    }
+
+    .welcome-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 12px
+    }
+
+    .welcome-desc {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      line-height: 1.4
+    }
+
+    .welcome-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: var(--primary);
+      color: var(--white);
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin: 8px 0 12px;
+    }
+
+    .welcome-menu {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 24px;
+    }
+
+    .welcome-menu li {
+      padding: 10px 6px;
+      border-bottom: 1px solid var(--light-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      color: var(--text-primary)
+    }
+
+    .welcome-menu li a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    @media (max-width:480px) {
+      .welcome-sidebar {
+        width: 85%;
+        border-radius: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Professional Header -->
+  <header class="header-pro">
+    <div class="header-pro-content">
+      <a href="{{ url_for('index') }}" class="brand-pro">
+        <div class="logo-pro">PN</div>
+        <div class="brand-text">
+          <div class="brand-main">Personalized Nutrition</div>
+          <div class="brand-highlight">WITH BLOOD REPORT</div>
+        </div>
+      </a>
+
+      <nav class="nav-pro">
+        <a href="{{ url_for('index') }}" {% if request.endpoint=='index' %}class="active" {% endif %}>
+          <i class="fas fa-home"></i> Home
+        </a>
+        {% if session.get('user') %}
+        <a href="{{ url_for('index') }}#bmi-widget"
+          onclick="document.getElementById('bmi-widget')?.scrollIntoView({behavior: 'smooth'})">
+          <i class="fas fa-weight"></i> BMI Tracker
+        </a>
+        <a href="{{ url_for('expert') }}" {% if request.endpoint=='expert' %}class="active" {% endif %}>
+          <i class="fas fa-comments"></i> Expert Advice
+        </a>
+        <!-- Analyze link removed as per V2 requirements -->
+        <a href="{{ url_for('progress') }}" {% if request.endpoint=='progress' %}class="active" {% endif %}>
+          <i class="fas fa-chart-line"></i> Progress
+        </a>
+        <div class="profile-dropdown">
+          <button class="profile-toggle" id="profileToggle">
+            <i class="fas fa-user-circle"></i>
+            <span>{{ session.get('user').get('name') if session.get('user') else 'Profile' }}</span>
+          </button>
+          <div class="profile-menu" id="profileMenu">
+            <a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </div>
+        </div>
+        {% else %}
+        <div class="profile-dropdown">
+          <button class="profile-toggle" id="profileToggleSignedOut">
+            <i class="fas fa-user-circle"></i>
+            <span>Account</span>
+          </button>
+          <div class="profile-menu" id="profileMenuSignedOut">
+            <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a>
+          </div>
+        </div>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-pro">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <script>
+    // basic dropdown toggle for profile menus
+    document.addEventListener('click', function (e) {
+      const toggle = document.getElementById('profileToggle');
+      const menu = document.getElementById('profileMenu');
+      const toggleOut = document.getElementById('profileToggleSignedOut');
+      const menuOut = document.getElementById('profileMenuSignedOut');
+
+      if (toggle && menu) {
+        if (toggle.contains(e.target)) {
+          menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        } else if (!menu.contains(e.target)) {
+          menu.style.display = 'none';
+        }
+      }
+      if (toggleOut && menuOut) {
+        if (toggleOut.contains(e.target)) {
+          menuOut.style.display = menuOut.style.display === 'block' ? 'none' : 'block';
+        } else if (!menuOut.contains(e.target)) {
+          menuOut.style.display = 'none';
+        }
+      }
+    });
+  </script>
+
+  <footer class="footer-pro">
+    <p><strong>&copy; {{ now.year }} Personalized Nutrition</strong> • Powered by Advanced Blood Report Analysis</p>
+    <p style="font-size: 0.85rem; margin-top: 0.5rem;">⚠️ <em>For informational purposes only. Not medical advice.
+        Always consult healthcare professionals.</em></p>
+  </footer>
+
+  <!-- ============ FLOATING CHATBOT WIDGET ============ -->
+  <style>
+    .chatbot-fab {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(17, 98, 58, .35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 9999;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      animation: cb-pulse 2.5s infinite
+    }
+
+    .chatbot-fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(17, 98, 58, .45)
+    }
+
+    .chatbot-fab.active {
+      animation: none;
+      transform: rotate(90deg) scale(1)
+    }
+
+    .chatbot-fab.active:hover {
+      transform: rotate(90deg) scale(1.1)
+    }
+
+    @keyframes cb-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 6px 24px rgba(17, 98, 58, .35)
+      }
+
+      50% {
+        box-shadow: 0 6px 32px rgba(47, 163, 108, .55)
+      }
+    }
+
+    .chatbot-window {
+      position: fixed;
+      bottom: 100px;
+      left: 28px;
+      width: 360px;
+      max-height: 480px;
+      background: rgba(255, 255, 255, .97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .15), 0 0 0 1px rgba(17, 98, 58, .08);
+      display: none;
+      flex-direction: column;
+      z-index: 9998;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(.95);
+      transition: opacity .3s ease, transform .3s ease
+    }
+
+    .chatbot-window.open {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1)
+    }
+
+    .cb-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .cb-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px
+    }
+
+    .cb-info h4 {
+      color: #fff;
+      font-size: .95rem;
+      margin: 0;
+      font-weight: 600
+    }
+
+    .cb-info span {
+      font-size: .75rem;
+      opacity: .85
+    }
+
+    .cb-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+      animation: cb-blink 1.5s infinite
+    }
+
+    @keyframes cb-blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    .cb-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      min-height: 200px;
+      background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%)
+    }
+
+    .cb-msgs::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .cb-msgs::-webkit-scrollbar-thumb {
+      background: rgba(17, 98, 58, .2);
+      border-radius: 4px
+    }
+
+    .cb-msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: .88rem;
+      line-height: 1.5;
+      word-wrap: break-word;
+      animation: cb-in .3s ease
+    }
+
+    @keyframes cb-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .cb-msg.bot {
+      align-self: flex-start;
+      background: #e8f5ee;
+      color: var(--text-primary);
+      border-bottom-left-radius: 4px
+    }
+
+    .cb-msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      border-bottom-right-radius: 4px
+    }
+
+    .cb-typing {
+      align-self: flex-start;
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #e8f5ee;
+      border-radius: 14px;
+      border-bottom-left-radius: 4px
+    }
+
+    .cb-typing span {
+      width: 7px;
+      height: 7px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      animation: cb-bounce 1.4s infinite ease-in-out
+    }
+
+    .cb-typing span:nth-child(2) {
+      animation-delay: .16s
+    }
+
+    .cb-typing span:nth-child(3) {
+      animation-delay: .32s
+    }
+
+    @keyframes cb-bounce {
+
+      0%,
+      80%,
+      100% {
+        transform: scale(.7);
+        opacity: .4
+      }
+
+      40% {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .cb-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-top: 1px solid rgba(17, 98, 58, .1);
+      background: #fff
+    }
+
+    .cb-input input {
+      flex: 1;
+      border: 1.5px solid #e6f2f4;
+      border-radius: 24px;
+      padding: 10px 16px;
+      font-size: .88rem;
+      outline: none;
+      transition: border-color .3s;
+      background: #fafffe
+    }
+
+    .cb-input input:focus {
+      border-color: var(--primary-light);
+      box-shadow: none
+    }
+
+    .cb-input button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: transform .2s;
+      flex-shrink: 0
+    }
+
+    .cb-input button:hover {
+      transform: scale(1.08)
+    }
+
+    @media(max-width:480px) {
+      .chatbot-window {
+        left: 8px;
+        right: 8px;
+        width: auto;
+        bottom: 94px;
+        max-height: 70vh
+      }
+
+      .chatbot-fab {
+        bottom: 18px;
+        left: 18px;
+        width: 50px;
+        height: 50px;
+        font-size: 20px
+      }
+    }
+  </style>
+  <button class="chatbot-fab" id="chatbotFab" title="Chat with NutriBot" aria-label="Open chatbot"><i
+      class="fas fa-comment-dots"></i></button>
+  <div class="chatbot-window" id="chatbotWindow">
+    <div class="cb-header">
+      <div class="cb-avatar"><i class="fas fa-robot"></i></div>
+      <div class="cb-info">
+        <h4>NutriBot</h4><span><span class="cb-dot"></span>Online &bull; Nutrition Expert</span>
+      </div>
+    </div>
+    <div class="cb-msgs" id="cbMsgs">
+      <div class="cb-msg bot">Hi there! I'm <strong>NutriBot</strong>, your nutrition assistant. Ask me anything about
+        diet, fitness, or health!</div>
+    </div>
+    <div class="cb-input"><input type="text" id="cbInput" placeholder="Ask a question..." autocomplete="off" /><button
+        id="cbSend" title="Send"><i class="fas fa-paper-plane"></i></button></div>
+  </div>
+  <script>
+    (function () { var fab = document.getElementById('chatbotFab'), win = document.getElementById('chatbotWindow'), inp = document.getElementById('cbInput'), btn = document.getElementById('cbSend'), msgs = document.getElementById('cbMsgs'), open = false; fab.addEventListener('click', function () { open = !open; if (open) { win.classList.add('open'); fab.classList.add('active'); fab.innerHTML = '<i class="fas fa-times"></i>'; setTimeout(function () { inp.focus() }, 350) } else { win.classList.remove('open'); fab.classList.remove('active'); fab.innerHTML = '<i class="fas fa-comment-dots"></i>' } }); function addM(t, s) { var d = document.createElement('div'); d.className = 'cb-msg ' + s; d.innerHTML = t; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight } function showT() { var d = document.createElement('div'); d.className = 'cb-typing'; d.id = 'cbTyping'; d.innerHTML = '<span></span><span></span><span></span>'; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight } function hideT() { var e = document.getElementById('cbTyping'); if (e) e.remove() } function send() { var t = inp.value.trim(); if (!t) return; addM(t, 'user'); inp.value = ''; showT(); fetch('/chatbot', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: t }) }).then(function (r) { return r.json() }).then(function (d) { hideT(); addM(d.reply || 'Sorry, something went wrong.', 'bot') }).catch(function () { hideT(); addM('Could not connect. Please try again.', 'bot') }) } btn.addEventListener('click', send); inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') send() }) })();
+  </script>
+  <!-- ============ END CHATBOT WIDGET ============ -->
+</body>
+
+</html>

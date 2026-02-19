@@ -1,0 +1,14 @@
+flask==2.2.5
+pandas==2.2.2
+numpy==1.25.0
+scikit-learn==1.3.2
+joblib==1.3.2
+
+reportlab==3.5.68
+pillow==10.2.0
+pytesseract==0.3.10
+opencv-python==4.9.0.80  # pinned to avoid NumPy 2.x compatibility issues
+
+easyocr==1.7.2
+matplotlib==3.10.7
+pymongo==4.7.1

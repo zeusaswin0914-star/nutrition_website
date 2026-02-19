@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile — Personalized Nutrition{% endblock %}
+{% block content %}
+
+<style>
+  .edit-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(13,76,107,0.06);
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+  .edit-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .edit-header h1 {
+    margin: 0;
+    color: #0d4c6b;
+    font-size: 1.8rem;
+  }
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #0d4c6b;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.3s ease;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #0d4c6b;
+    box-shadow: 0 0 0 3px rgba(13, 76, 107, 0.1);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .btn-primary {
+    flex: 1;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #0d4c6b, #1a6b8f);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(13, 76, 107, 0.2);
+  }
+  .btn-secondary {
+    flex: 1;
+    padding: 0.8rem;
+    background: #f1f5f9;
+    color: #0d4c6b;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background: #e5e7eb;
+  }
+  .success-message {
+    background: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #166534;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .breadcrumb {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+  }
+</style>
+
+<div class="breadcrumb">
+  <a href="{{ url_for('profile') }}" style="color:#1a6b8f; text-decoration:none;">Profile</a> / Edit Profile
+</div>
+
+{% if message %}
+  <div class="success-message">
+    <i class="fas fa-check-circle"></i> {{ message }}
+  </div>
+{% endif %}
+
+<div class="edit-card">
+  <div class="edit-header">
+    <i class="fas fa-user-edit" style="font-size: 2rem; color: #0d4c6b;"></i>
+    <h1>Edit Your Profile</h1>
+  </div>
+
+  <form method="POST" action="{{ url_for('profile_edit') }}">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" name="name" value="{{ session.get('user', {}).get('name', '') }}" required placeholder="Enter your full name">
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" name="email" value="{{ session.get('user', {}).get('email', '') }}" required placeholder="Enter your email address">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Age (years)</label>
+        <input type="number" name="age" value="{{ session.get('user', {}).get('age', '') }}" min="1" max="120" placeholder="e.g., 35">
+      </div>
+
+      <div class="form-group">
+        <label>Age Category</label>
+        <select name="age_category">
+          <option value="">-- Select category --</option>
+          <option value="toddler" {% if session.get('user', {}).get('age_category') == 'toddler' %}selected{% endif %}>Toddler (1-3)</option>
+          <option value="child" {% if session.get('user', {}).get('age_category') == 'child' %}selected{% endif %}>Child (4-8)</option>
+          <option value="teen" {% if session.get('user', {}).get('age_category') == 'teen' %}selected{% endif %}>Teen (9-18)</option>
+          <option value="adult" {% if session.get('user', {}).get('age_category') == 'adult' %}selected{% endif %}>Adult (19-65)</option>
+          <option value="senior" {% if session.get('user', {}).get('age_category') == 'senior' %}selected{% endif %}>Senior (65+)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-top:12px">
+      <div class="form-group">
+        <label>Gender</label>
+        <select name="gender">
+          <option value="">-- Select --</option>
+          <option value="male" {% if session.get('user', {}).get('gender') == 'male' %}selected{% endif %}>Male</option>
+          <option value="female" {% if session.get('user', {}).get('gender') == 'female' %}selected{% endif %}>Female</option>
+          <option value="other" {% if session.get('user', {}).get('gender') == 'other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input type="number" name="height_cm" value="{{ session.get('user', {}).get('height_cm', '') }}" step="0.1" placeholder="e.g., 170">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Height (cm)</label>
+        <input type="number" name="height_cm" value="{{ session.get('user', {}).get('height_cm', '') }}" step="0.1" placeholder="e.g., 170">
+      </div>
+
+      <div class="form-group">
+        <label>Weight (kg)</label>
+        <input type="number" name="weight_kg" value="{{ session.get('user', {}).get('weight_kg', '') }}" step="0.1" placeholder="e.g., 70">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number (optional)</label>
+      <input type="tel" name="phone" value="{{ session.get('user', {}).get('phone', '') }}" placeholder="Enter your phone number">
+    </div>
+
+    <div class="form-group">
+      <label>Health Conditions (optional)</label>
+      <textarea name="health_conditions" rows="4" placeholder="List any relevant health conditions or dietary restrictions...">{{ session.get('user', {}).get('health_conditions', '') }}</textarea>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" class="btn-primary">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+      <a href="{{ url_for('profile') }}" class="btn-secondary">
+        <i class="fas fa-times"></i> Cancel
+      </a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

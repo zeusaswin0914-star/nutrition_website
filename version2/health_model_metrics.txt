@@ -1,0 +1,12 @@
+Health Model Evaluation V2
+==========================
+Best Model: Random Forest
+Accuracy: 0.9991
+
+All Model Results:
+Logistic Regression: Acc=0.7477, F1=0.7458
+Random Forest: Acc=0.9991, F1=0.9991
+Gradient Boosting: Acc=0.9991, F1=0.9991
+XGBoost: Acc=0.9983, F1=0.9983
+
+Process completed successfully.
