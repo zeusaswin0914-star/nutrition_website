@@ -2,8 +2,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_file, make_response
 import joblib, os, io
 import numpy as np
-from version2.model_inference_v2 import analyze_biomarkers_v2 as analyze_biomarkers, recommend_foods_v2 as recommend_foods, NORMAL_RANGES, FOOD_RECO
-from nutrition_engine import generate_pdf  # Keep PDF generation from V1
+from nutrition_engine import analyze_biomarkers, recommend_foods, generate_pdf, NORMAL_RANGES, FOOD_RECO
 from mongo_helper import init_mongo, save_prediction, get_collection
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -12,7 +11,7 @@ from ocr_helper import extract_blood_report_text, parse_lab_values, assess_lab_v
 from recommendation_engine import get_recommendations_for_assessment, generate_meal_plan_recommendation
 from pdf_generator import generate_pdf_report
 from diet_chart_generator import generate_complete_diet_chart
-from version2.diet_logic_v2 import recommend_diet_plan_v2 as recommend_diet_plan, DIET_PLANS
+from diet_plans import recommend_diet_plan, DIET_PLANS
 
 app = Flask(__name__)
 app.secret_key = "replace_this_with_a_random_secret"
@@ -52,29 +51,6 @@ def allowed_file(name):
     _, ext = os.path.splitext(name.lower())
     return ext in ALLOWED
 
-
-def map_gender(g):
-    if g is None:
-        return None
-    g = str(g).strip().lower()
-    if g in ('male', 'm', '1', 'man'):
-        return 1
-    if g in ('female', 'f', '0', 'woman'):
-        return 0
-    return 0.5
-
-
-def classify_calorie_need(calories):
-    try:
-        c = float(calories)
-    except Exception:
-        return 'unknown'
-    if c < 1800:
-        return 'cut'
-    if c <= 2500:
-        return 'maintain'
-    return 'surplus'
-
 # homepage
 @app.route("/")
 def index():
@@ -105,7 +81,6 @@ def register():
             "email": request.form.get("email"),
             "phone": request.form.get("phone"),
             "age": request.form.get("age"),
-            "gender": request.form.get("gender"),
             "height_cm": request.form.get("height"),
             "weight_kg": request.form.get("weight"),
             "password": request.form.get("password")
@@ -130,7 +105,7 @@ def register():
             users.insert_one({**u, "created": datetime.now()})
         except Exception as e:
             print("User save failed:", e)
-        session['user'] = {"name": u['name'], "email": u['email'], "gender": u.get('gender')}
+        session['user'] = {"name": u['name'], "email": u['email']}
         return redirect(url_for('index'))
     return render_template("register.html", now=datetime.now())
 
@@ -144,10 +119,6 @@ def forgot():
 # upload report / manual input
 @app.route("/upload", methods=["GET","POST"])
 def upload_report():
-    # Require login to upload or analyze reports
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
     if request.method == "POST":
         # try file upload
         f = request.files.get("report_file")
@@ -155,7 +126,6 @@ def upload_report():
         age = request.form.get("age")
         height = request.form.get("height")
         weight = request.form.get("weight")
-        gender = request.form.get("gender")
         hgb = request.form.get("hgb")
         glucose = request.form.get("glucose")
         cholesterol = request.form.get("cholesterol")
@@ -197,17 +167,12 @@ def upload_report():
         v_age = asf(age); v_height = asf(height); v_weight = asf(weight)
         v_hgb = asf(hgb); v_glu = asf(glucose); v_chol = asf(cholesterol)
 
-        # map gender -> numeric sex feature if present in model columns
-        v_sex = map_gender(gender)
-
         if 'age' in inp and v_age is not None: inp['age'] = v_age
         if 'height' in inp and v_height is not None: inp['height'] = v_height
         if 'weight' in inp and v_weight is not None: inp['weight'] = v_weight
         if 'hemoglobin' in inp and v_hgb is not None: inp['hemoglobin'] = v_hgb
         if 'fasting_glucose' in inp and v_glu is not None: inp['fasting_glucose'] = v_glu
         if 'total_chol' in inp and v_chol is not None: inp['total_chol'] = v_chol
-        if 'sex' in inp and v_sex is not None:
-            inp['sex'] = v_sex
 
         # predict calories
         user_data = np.array([[inp[c] for c in num_cols]])
@@ -219,9 +184,7 @@ def upload_report():
         recs = recommend_foods(deficiencies)
         macros = {"carbs": 50, "protein": 20, "fat": 30}  # percentages
 
-        # tag classification and save prediction
-        calorie_class = classify_calorie_need(pred)
-        inp['_calorie_class'] = calorie_class
+        # save prediction
         try:
             save_prediction(inputs=inp,
                             prediction=float(round(pred,2)),
@@ -246,14 +209,11 @@ def upload_report():
             diet_recommendation = recommend_diet_plan(
                 lab_values=lab_values,
                 age=int(v_age) if v_age else 30,
-                gender=gender,
-                health_conditions="",
-                deficiencies=deficiencies
+                health_conditions=""
             )
             
             session['last_result'] = {
                 "prediction": round(float(pred), 2),
-                "prediction_class": calorie_class,
                 "report": report,
                 "recommendations": recs,
                 "macros": macros,
@@ -261,8 +221,7 @@ def upload_report():
                 "lab_values": lab_values,
                 "deficiencies": deficiencies,
                 "diet_plan": diet_recommendation,
-                "age": v_age,
-                "gender": gender
+                "age": v_age
             }
         except Exception as e:
             print("Diet chart generation failed:", e)
@@ -286,9 +245,6 @@ def upload_report():
 # Backwards-compatible endpoint: some templates/forms post to /predict
 @app.route('/predict', methods=["GET","POST"])
 def predict():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-
     if request.method == 'POST':
         # reuse upload_report POST handling
         return upload_report()
@@ -426,7 +382,6 @@ def profile_edit():
         name = request.form.get('name')
         email = request.form.get('email')
         age = request.form.get('age')
-        gender = request.form.get('gender')
         age_category = request.form.get('age_category')
         height_cm = request.form.get('height_cm')
         weight_kg = request.form.get('weight_kg')
@@ -437,7 +392,6 @@ def profile_edit():
         session['user']['name'] = name or session['user'].get('name')
         session['user']['email'] = email or session['user'].get('email')
         session['user']['age'] = age
-        session['user']['gender'] = gender
         session['user']['age_category'] = age_category
         session['user']['height_cm'] = height_cm
         session['user']['weight_kg'] = weight_kg
@@ -455,7 +409,6 @@ def profile_edit():
                     'name': name,
                     'email': email,
                     'age': age,
-                    'gender': gender,
                     'age_category': age_category,
                     'height_cm': height_cm,
                     'weight_kg': weight_kg,
